@@ -7,11 +7,16 @@ import (
 )
 
 func main() {
-	term, err := terminal.CreateTermianl(20, 20)
-	if err != nil {
-		fmt.Errorf("Cannot create terminal: ", err)
+
+	gameTerm, err := terminal.CreateTerminal(50, 50)
+	coffeeGame := game.GameState{
+		Terminal: gameTerm,
 	}
 
-	game := game.GameState{Terminal: term}
-	game.GameLoop()
+	coffeeGame.GameLoop()
+
+	if err != nil {
+		fmt.Errorf("Cannot create terminal window", err)
+	}
+
 }

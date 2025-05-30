@@ -1,8 +1,11 @@
 package terminal
 
 import (
+	"fmt"
 	"os"
 	"sync"
+
+	"golang.org/x/term"
 	"unicode/utf8"
 )
 
@@ -14,7 +17,13 @@ type Terminal struct {
 	Lock         sync.Mutex
 }
 
-func CreateTermianl(height, width int) (*Terminal, error) {
+func CreateTerminal(height, width int) (*Terminal, error) {
+
+	oldState, err := term.MakeRaw(int(os.Stdin.Fd()))
+	if err != nil {
+		fmt.Errorf("Couldnt make term raw: ", err)
+	}
+	defer term.Restore(int(os.Stdin.Fd()), oldState)
 
 	screen := make([][]rune, height)
 	for i := range screen {
@@ -37,8 +46,8 @@ func (t *Terminal) Render() []byte {
 	t.Frame = t.Frame[:0]
 	tmp := make([]byte, 4)
 
-	for y, _ := range t.Screen {
-		for x, _ := range t.Screen[y] {
+	for x, _ := range t.Screen {
+		for y, _ := range t.Screen[x] {
 			n := utf8.EncodeRune(tmp, t.Screen[x][y])
 			t.Frame = append(t.Frame, tmp[:n]...)
 		}
@@ -61,7 +70,7 @@ func (t *Terminal) WriteText(screen [][]rune, x, y int, text string) error {
 
 	t.Flush()
 	for i, r := range text {
-		screen[y+i][x] = r
+		screen[x][y+i] = r
 	}
 
 	t.Screen = screen

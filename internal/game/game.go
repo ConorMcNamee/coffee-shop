@@ -18,7 +18,12 @@ type GameState struct {
 
 func (gs *GameState) GameLoop() {
 	for {
-		time.Sleep(time.Second / 60)
-		gs.Terminal.WriteText(gs.Terminal.Screen, 0, 0, "Hello World")
+
+		time.Sleep(time.Second / 30)
+		gs.Terminal.WriteText(gs.Terminal.Screen, 0, 0, "Coffee: ")
 	}
+}
+
+func (gs *GameState) HandleInput() {
+
 }
