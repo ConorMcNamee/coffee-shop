@@ -1,6 +1,7 @@
 package main
 
 import (
+	"coffee/internal/game"
 	"coffee/internal/terminal"
 	"fmt"
 )
@@ -11,5 +12,6 @@ func main() {
 		fmt.Errorf("Cannot create terminal: ", err)
 	}
 
-	term.WriteText(term.Screen, 0, 0, "Hello World")
+	game := game.GameState{Terminal: term}
+	game.GameLoop()
 }

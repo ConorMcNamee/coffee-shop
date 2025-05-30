@@ -21,7 +21,7 @@ func CreateTermianl(height, width int) (*Terminal, error) {
 		screen[i] = make([]rune, width)
 	}
 
-	FrameBuffer := make([]byte, 1024)
+	FrameBuffer := make([]byte, height*width*4)
 
 	terminal := &Terminal{
 		ScreenHeight: height,
@@ -47,8 +47,19 @@ func (t *Terminal) Render() []byte {
 	return t.Frame
 }
 
+func (t *Terminal) Flush() {
+	for y := range t.Screen {
+		for x := range t.Screen {
+			t.Screen[x][y] = ' '
+		}
+	}
+
+	os.Stdout.Write([]byte("\033[H\033[2J"))
+}
+
 func (t *Terminal) WriteText(screen [][]rune, x, y int, text string) error {
 
+	t.Flush()
 	for i, r := range text {
 		screen[y+i][x] = r
 	}
